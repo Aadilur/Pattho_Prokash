@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "407353363406",
+    "firebase_url": "https://pattho-prokash-admin-default-rtdb.firebaseio.com",
+    "project_id": "pattho-prokash-admin",
+    "storage_bucket": "pattho-prokash-admin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407353363406:android:b0aa498cc231a08e7cf99f",
+        "android_client_info": {
+          "package_name": "com.admin.patthoprokash.elibrary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407353363406-lsptim683l5jcamlki0sdk2lhlp2co5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCann37lXLly7y0ND1e4waFgeoUttZkJwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407353363406-lsptim683l5jcamlki0sdk2lhlp2co5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407353363406:android:9c8e16121d7353f07cf99f",
+        "android_client_info": {
+          "package_name": "com.pattho.prokash.patthoprokash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407353363406-lsptim683l5jcamlki0sdk2lhlp2co5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCann37lXLly7y0ND1e4waFgeoUttZkJwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407353363406-lsptim683l5jcamlki0sdk2lhlp2co5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
