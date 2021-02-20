@@ -7,4 +7,25 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color">#fff</color>
+
+    <color name="primaryColor">#37474f</color>
+    <color name="primaryLightColor">#62727b</color>
+    <color name="primaryDarkColor">#102027</color>
+    <color name="secondaryColor">#bbdefb</color>
+    <color name="secondaryLightColor">#428e92</color>
+    <color name="secondaryDarkColor">#00363a</color>
+    <color name="primaryTextColor">#b0bec5</color>
+    <color name="secondaryTextColor">#cfd8dc</color>
+
+    <color name="primaryColorDark">#37474f</color>
+    <color name="primaryLightColorDark">#62727b</color>
+    <color name="primaryDarkColorDark">#102027</color>
+    <color name="secondaryColorDark">#006064</color>
+    <color name="secondaryLightColorDark">#428e92</color>
+    <color name="secondaryDarkColorDark">#00363a</color>
+    <color name="primaryTextColorDark">#b0bec5</color>
+    <color name="secondaryTextColorDark">#cfd8dc</color>
+
 </resources>

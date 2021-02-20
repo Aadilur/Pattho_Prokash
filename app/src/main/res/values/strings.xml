@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Pattho Prokash</string>
+    <string name="category_expandable_list_view">বই ক্যাটাগরি</string>
+
+    <string-array name="category_expandable_list_view">
+        <item>পাঠ্য সাহিত্য কর্নার</item>
+        <item>পাঠ্য উপন্যাস কর্নার</item>
+        <item>পাঠ্য রহস্য কর্নার</item>
+        <item>পাঠ্য ইসলামিক কর্নার</item>
+        <item>পাঠ্য বিজ্ঞান কর্নার</item>
+        <item>পাঠ্য কিশোর কর্নার</item>
+        <item>ছোটদের পাঠ্য কর্নার</item>
+        <item>পাঠ্য ভৌতিক কর্নার</item>
+        <item>ধর্মীয় পাঠ্য কর্নার</item>
+        <item>View All</item>
+    </string-array>
+
+
+    <!--    Nazmul sent Today at 16:48-->
+    <!--    বই ক্যাটাগরি-->
+    <!--    পাঠ্য সাহিত্য কর্নার-->
+    <!--    পাঠ্য উপন্যাস কর্নার-->
+    <!--    পাঠ্য রহস্য কর্নার-->
+    <!--    পাঠ্য ইসলামিক কর্নার-->
+    <!--    পাঠ্য বিজ্ঞান কর্নার-->
+    <!--    পাঠ্য কিশোর কর্নার-->
+    <!--    ছোটদের পাঠ্য কর্নার-->
+    <!--    পাঠ্য ভৌতিক কর্নার-->
+    <!--    ধর্মীয় পাঠ্য কর্নার-->
 </resources>
