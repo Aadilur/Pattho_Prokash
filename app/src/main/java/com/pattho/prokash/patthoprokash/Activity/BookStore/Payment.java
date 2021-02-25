@@ -1,9 +1,11 @@
 package com.pattho.prokash.patthoprokash.Activity.BookStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -36,11 +38,13 @@ public class Payment extends AppCompatActivity {
     RadioGroup radioGroup;
     RadioButton bkash,rocket;
 
+    boolean fromCart;
+
     DatabaseReference databaseReference;
 
     TextInputEditText Txd, PaymentAccount, shippingAddress,phone;
     Button payBtn;
-    int amount,num;
+    int price,num;
     String bid,paymentMethod="bKash";
     String author,book,cvr;
 
@@ -74,60 +78,175 @@ public class Payment extends AppCompatActivity {
         payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String txid,paymentAccount,shippingAdd,phoneNum;
-                txid = Txd.getText().toString();
-                paymentAccount = PaymentAccount.getText().toString();
-                shippingAdd = shippingAddress.getText().toString();
-                phoneNum = phone.getText().toString();
-                if (txid.equals("") || paymentAccount.equals("") || shippingAdd.equals("") || phoneNum.equals("")){
-                    Toast.makeText(Payment.this, "All Field Are Required", Toast.LENGTH_SHORT).show();
-                }else {
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    final String uid = user.getUid();
 
-                    Map<String,Object > data = new HashMap<>();
-                    data.put("bid",bid);
-                    data.put("time", ServerValue.TIMESTAMP);
-                    data.put("Txid",txid);
-                    data.put("paymentMethod",paymentMethod);
-                    data.put("paymentAccount",paymentAccount);
-                    data.put("shipping",shippingAdd);
-                    data.put("contact",phoneNum);
-                    data.put("amount",amount);
-                    data.put("status","pending");
-                    data.put("itemNum",num);
-                    data.put("uid",uid);
-                    data.put("bName",book);
-                    data.put("aName",author);
-                    data.put("cover",cvr);
+                if (!fromCart) {
 
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (!snapshot.child(paymentMethod+":"+txid).exists()){
+                    String txid, paymentAccount, shippingAdd, phoneNum;
+                    txid = Txd.getText().toString();
+                    paymentAccount = PaymentAccount.getText().toString();
+                    shippingAdd = shippingAddress.getText().toString();
+                    phoneNum = phone.getText().toString();
+                    if (txid.equals("") || paymentAccount.equals("") || shippingAdd.equals("") || phoneNum.equals("")) {
+                        Toast.makeText(Payment.this, "All Field Are Required", Toast.LENGTH_SHORT).show();
+                    } else {
 
-                                databaseReference.child(paymentMethod+":"+txid).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()){
-                                            Toast.makeText(Payment.this, "Order Placed Successfully...", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            Toast.makeText(Payment.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        final String uid = user.getUid();
+
+                        Map<String, Object> data2 = new HashMap<>();
+                        data2.put("bid", bid);
+                        data2.put("Txid", txid);
+                        data2.put("paymentMethod", paymentMethod);
+                        data2.put("paymentAccount", paymentAccount);
+                        data2.put("shipping", shippingAdd);
+                        data2.put("contact", phoneNum);
+                        data2.put("status", "pending");
+                        data2.put("quantity", num);
+                        data2.put("price", price);
+                        data2.put("bName", book);
+                        data2.put("aName", author);
+                        data2.put("cover", cvr);
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("time", ServerValue.TIMESTAMP);
+                        data.put("totalPrice", price);
+                        data.put("uid", uid);
+
+
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.child(paymentMethod + ":" + txid).exists()) {
+
+                                    databaseReference.child(paymentMethod + ":" + txid).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                databaseReference.child(paymentMethod + ":" + txid).child("books").child(bid).setValue(data2);
+                                                Toast.makeText(Payment.this, "Order Placed Successfully...", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(Payment.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
-                            }else Toast.makeText(Payment.this, "Your Transaction ID Already Exist...", Toast.LENGTH_SHORT).show();
-                        }
+                                } else
+                                    Toast.makeText(Payment.this, "Your Transaction ID Already Exist...", Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                            }
+                        });
 
+                    }
                 }
+
+                else {
+
+
+                    String txid, paymentAccount, shippingAdd, phoneNum;
+                    txid = Txd.getText().toString();
+                    paymentAccount = PaymentAccount.getText().toString();
+                    shippingAdd = shippingAddress.getText().toString();
+                    phoneNum = phone.getText().toString();
+                    if (txid.equals("") || paymentAccount.equals("") || shippingAdd.equals("") || phoneNum.equals("")) {
+                        Toast.makeText(Payment.this, "All Field Are Required", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        final String uid = user.getUid();
+
+                        Map<String, Object> data2 = new HashMap<>();
+                        data2.put("Txid", txid);
+                        data2.put("paymentMethod", paymentMethod);
+                        data2.put("paymentAccount", paymentAccount);
+                        data2.put("shipping", shippingAdd);
+                        data2.put("contact", phoneNum);
+                        data2.put("status", "pending");
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("time", ServerValue.TIMESTAMP);
+                        data.put("uid", uid);
+
+
+
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid());
+
+                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("pendingOrder").child(paymentMethod + ":" + txid);;
+
+
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        reference2.setValue(snapshot.getValue(), new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                if (error != null) {
+                                    System.out.println("Copy failed");
+                                } else {
+                                    System.out.println("Success");
+//                                    reference.removeValue();
+                                    reference2.updateChildren(data);
+
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                reference2.child("books").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                dataSnapshot.getRef().updateChildren(data2);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+//                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                if (!snapshot.child(paymentMethod + ":" + txid).exists()) {
+//
+//                                    databaseReference.child(paymentMethod + ":" + txid).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task) {
+//                                            if (task.isSuccessful()) {
+//                                                Toast.makeText(Payment.this, "Order Placed Successfully...", Toast.LENGTH_SHORT).show();
+//                                            } else {
+//                                                Toast.makeText(Payment.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//                                    });
+//
+//                                } else
+//                                    Toast.makeText(Payment.this, "Your Transaction ID Already Exist...", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
+
+                    }
+                }
+
             }
         });
 
@@ -153,8 +272,11 @@ public class Payment extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+
+        fromCart = intent.getBooleanExtra("fromCart",false);
+
         Amount.setText("Pay Taka : BDT "+intent.getIntExtra("amount",0)+"৳ /=");
-        amount = intent.getIntExtra("amount",0);
+        price = intent.getIntExtra("amount",0);
         num = intent.getIntExtra("num",0);
         bid = intent.getStringExtra("bid");
 

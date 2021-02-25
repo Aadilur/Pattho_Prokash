@@ -16,24 +16,15 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +51,6 @@ import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnima
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -132,6 +122,7 @@ public class HomeStore extends AppCompatActivity {
 
         categoryListViewAdapter = new CategoryListView_Adapter(HomeStore.this, categoryGroupList, categoryListItem);
         expandableListView.setAdapter(categoryListViewAdapter);
+
 
         UserAuth();
         onClickData();
@@ -811,13 +802,48 @@ public class HomeStore extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.store_toolbar,menu);
+
+        View actionView = menu.findItem(R.id.cart_icon).getActionView();
+        TextView tv = actionView.findViewById(R.id.itemCount);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(firebaseUser.getUid()).child("books");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int tBookCount = (int) snapshot.getChildrenCount();
+                if (tBookCount>0 && tBookCount<10) {
+                    tv.setText(tBookCount + "");
+                }else if (tBookCount >9){
+                    tv.setText("9+");
+                }else tv.setText("0");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(HomeStore.this,ViewStoreCart.class);
+                startActivity(intent);
+            }
+        });
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.main_menu_userDrawer) {
+        if (item.getItemId() == R.id.settings_icon) {
             drawerLayout.openDrawer(GravityCompat.END);
+            return true;
+        }  if (item.getItemId() == R.id.cart_icon) {
+            Intent intent = new Intent(HomeStore.this,ViewStoreCart.class);
+            startActivity(intent);
             return true;
         }
         return true;

@@ -11,12 +11,21 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pattho.prokash.patthoprokash.Activity.BookStore.BookDetails;
 import com.pattho.prokash.patthoprokash.Model.AllBook_Model;
 import com.pattho.prokash.patthoprokash.R;
@@ -24,7 +33,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StoreViewAll_Adapter extends RecyclerView.Adapter<StoreViewAll_VH> implements Filterable {
 
@@ -33,6 +44,11 @@ public class StoreViewAll_Adapter extends RecyclerView.Adapter<StoreViewAll_VH> 
     List<AllBook_Model> listData;
     DatabaseReference dir;
     List<AllBook_Model> listDataFull;
+
+
+    DatabaseReference databaseReference;
+
+    FirebaseUser user;
 
     public StoreViewAll_Adapter() {
     }
@@ -98,6 +114,107 @@ public class StoreViewAll_Adapter extends RecyclerView.Adapter<StoreViewAll_VH> 
                 context.startActivity(intent);
             }
         });
+
+        holder.cartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (firebaseUser != null) {
+
+
+                    int quantity = 1;
+                    int pPrice = 0;
+
+                    if (!data.getNew_price().equals("")) {
+                        pPrice = Integer.parseInt(data.getNew_price());
+
+                    } else {
+                        if (!data.getPrice().equals("")) {
+                            pPrice = Integer.parseInt(data.getPrice());
+                        }
+                    }
+
+
+                    user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user == null) {
+                        Toast.makeText(context, "Please Sign In to Continue", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books");
+                        int finalPPrice = pPrice;
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                if (snapshot.exists()) {
+
+                                    if (snapshot.hasChild(data.getId())) {
+
+                                        Toast.makeText(context, "Book Already Added ! Please visit Your Cart.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getId());
+                                        Map<String, Object> data1 = new HashMap<>();
+                                        data1.put("bid", data.getId());
+                                        data1.put("quantity", quantity + "");
+                                        data1.put("price", quantity * finalPPrice + "");
+
+                                        data1.put("cover",data.getCover_img());
+                                        data1.put("bName", data.getBook_name());
+                                        data1.put("author", data.getAuthor());
+
+                                        databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+
+                                                    Toast.makeText(context, "Book Added Successfully.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getId());
+                                    Map<String, Object> data1 = new HashMap<>();
+                                    data1.put("bid", data.getId());
+                                    data1.put("quantity", quantity + "");
+                                    data1.put("price", quantity * finalPPrice + "");
+
+                                    data1.put("cover",data.getCover_img());
+                                    data1.put("bName", data.getBook_name());
+                                    data1.put("author", data.getAuthor());
+
+                                    databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+
+                                                Toast.makeText(context, "Book Added Successfully.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                    }
+                }else {
+                    Toast.makeText(context, "Please Sign In.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+        });
+
+
     }
 
     @Override

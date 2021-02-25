@@ -11,8 +11,8 @@ public class AllBook_Model {
     private String author;
     private String author_img;
     private String book_name;
-    private String condition;
     private String cover_img;
+    private String condition;
     private String description;
     private String id;
     private String new_price;
@@ -23,6 +23,7 @@ public class AllBook_Model {
     private List<String> category;
     private List<String> genre;
     private List<String> keyword;
+
 
     public AllBook_Model(Application application) {
         this.application = application;

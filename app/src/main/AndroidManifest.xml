@@ -12,12 +12,14 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PatthoProkash">
-        <activity android:name=".Activity.PreviewBooks"></activity>
+        <activity android:name=".Activity.BookStore.ViewStoreCart"></activity>
+        <activity android:name=".Activity.PreviewBooks" />
         <activity android:name=".Activity.BookStore.ViewAllBooks" />
         <activity android:name=".Activity.VerifyPhone" />
         <activity android:name=".Activity.BookStore.Payment" />

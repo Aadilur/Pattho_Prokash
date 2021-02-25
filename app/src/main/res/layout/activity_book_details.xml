@@ -28,7 +28,7 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
 
 
             <com.yinglan.shadowimageview.ShadowImageView
-                android:id="@+id/shadowImageView"
+                android:id="@+id/cover"
                 android:layout_width="@dimen/_135sdp"
                 android:layout_height="@dimen/_190sdp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,14 +39,14 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
             </com.yinglan.shadowimageview.ShadowImageView>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/deleteBtn"
                 android:layout_width="@dimen/_140sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:text="Buy Now"
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="@+id/plus"
                 app:layout_constraintStart_toStartOf="@+id/minus"
-                app:layout_constraintTop_toBottomOf="@+id/count" />
+                app:layout_constraintTop_toBottomOf="@+id/quantity" />
 
             <Button
                 android:id="@+id/button3"
@@ -56,9 +56,9 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 android:text="Add to Cart"
                 android:visibility="gone"
                 android:textSize="@dimen/_8sdp"
-                app:layout_constraintBottom_toBottomOf="@+id/button2"
-                app:layout_constraintStart_toEndOf="@+id/button2"
-                app:layout_constraintTop_toTopOf="@+id/button2"
+                app:layout_constraintBottom_toBottomOf="@+id/deleteBtn"
+                app:layout_constraintStart_toEndOf="@+id/deleteBtn"
+                app:layout_constraintTop_toTopOf="@+id/deleteBtn"
                 app:layout_constraintVertical_bias="0.0" />
 
 
@@ -71,16 +71,21 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 android:text="+"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/minus"
-                app:layout_constraintStart_toEndOf="@+id/count"
+                app:layout_constraintStart_toEndOf="@+id/quantity"
                 app:layout_constraintTop_toTopOf="@+id/minus" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/count"
+                android:id="@+id/quantity"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="1"
+                android:textIsSelectable="false"
+                android:focusable="false"
+                android:cursorVisible="false"
+                android:inputType="number"
+                android:clickable="false"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/minus"
                 app:layout_constraintStart_toEndOf="@+id/minus"
@@ -102,7 +107,7 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 app:layout_constraintVertical_bias="0.654" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/bName"
                 android:layout_width="@dimen/_150sdp"
                 android:maxLines="2"
                 android:layout_height="wrap_content"
@@ -117,20 +122,20 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/aName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:text="Author Name"
                 android:textSize="@dimen/_8sdp"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="@+id/bName"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="@+id/bName"
+                app:layout_constraintTop_toBottomOf="@+id/bName" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -148,7 +153,7 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:text="Status: "
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/textView3"
+                app:layout_constraintBottom_toTopOf="@+id/price"
                 app:layout_constraintEnd_toEndOf="@+id/minus"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/minus" />

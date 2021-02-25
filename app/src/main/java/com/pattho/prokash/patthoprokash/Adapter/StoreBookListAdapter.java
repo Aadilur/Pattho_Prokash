@@ -127,7 +127,12 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
         holder.cartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int amount = 1;
+
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (firebaseUser != null) {
+
+                int quantity = 1;
                 int pPrice = 0;
 
                 if (!data.getNew_price().equals("")){
@@ -146,7 +151,7 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
                     Toast.makeText(context, "Please Sign In to Continue", Toast.LENGTH_SHORT).show();
                 }else {
 
-                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid());
+                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books");
                     int finalPPrice = pPrice;
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -158,11 +163,15 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
 
                                     Toast.makeText(context, "Book Already Added ! Please visit Your Cart.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child(data.getId());
+                                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getId());
                                     Map<String, Object> data1 = new HashMap<>();
                                     data1.put("bid", data.getId());
-                                    data1.put("amount", amount);
-                                    data1.put("price", amount * finalPPrice);
+                                    data1.put("quantity", quantity+"");
+                                    data1.put("price", quantity * finalPPrice+"");
+
+                                    data1.put("cover",data.getCover_img());
+                                    data1.put("bName", data.getBook_name());
+                                    data1.put("author", data.getAuthor());
 
                                     databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -177,11 +186,15 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
                             }
 
                             else {
-                                databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child(data.getId());
+                                databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getId());
                                 Map<String, Object> data1 = new HashMap<>();
                                 data1.put("bid", data.getId());
-                                data1.put("amount", amount);
-                                data1.put("price", amount * finalPPrice);
+                                data1.put("quantity", quantity+"");
+                                data1.put("price", quantity * finalPPrice+"");
+
+                                data1.put("cover",data.getCover_img());
+                                data1.put("bName", data.getBook_name());
+                                data1.put("author", data.getAuthor());
 
                                 databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -205,6 +218,10 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
 
 
 
+                }
+
+                }else {
+                    Toast.makeText(context, "Please Sign In.", Toast.LENGTH_SHORT).show();
                 }
             }
 

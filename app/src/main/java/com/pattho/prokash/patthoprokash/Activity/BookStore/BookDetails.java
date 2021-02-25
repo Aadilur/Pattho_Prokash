@@ -39,7 +39,7 @@ public class BookDetails extends AppCompatActivity {
     ShadowImageView cover;
     Button plus,minus,buy,cart;
     TextView bName, aName,status, price, count, details;
-    int num = 1,amount;
+    int num = 1, totalPrice;
     String bid,author,book,cvr;
 
     FirebaseAuth firebaseAuth;
@@ -101,8 +101,8 @@ public class BookDetails extends AppCompatActivity {
                         }else times = Integer.parseInt(intent.getStringExtra("newPrice"));
 
                     }catch (Exception ignored){}
-                    price.setText("BDT " + times*num + "৳/=");
-                    amount = times*num;
+                    price.setText("৳ " + times*num + ".00/=");
+                    totalPrice = times*num;
 
                     count.setText(num+"");
                     plus.setClickable(true);
@@ -130,7 +130,7 @@ public class BookDetails extends AppCompatActivity {
                         }else times = Integer.parseInt(intent.getStringExtra("newPrice"));
                     }catch (Exception ignored){}
                     price.setText("BDT " + times*num + "৳/=");
-                    amount = times*num;
+                    totalPrice = times*num;
 
                     count.setText(num+"");
                     minus.setClickable(true);
@@ -145,7 +145,7 @@ public class BookDetails extends AppCompatActivity {
 
                     if (firebaseUser != null){
                         Intent intent = new Intent(BookDetails.this,Payment.class);
-                        intent.putExtra("amount",amount);
+                        intent.putExtra("amount", totalPrice);
                         intent.putExtra("bid",bid);
                         intent.putExtra("num",num);
 
@@ -180,7 +180,7 @@ public class BookDetails extends AppCompatActivity {
                         data.put("paymentAccount","");
                         data.put("shipping","");
                         data.put("contact","");
-                        data.put("amount",amount);
+                        data.put("amount", totalPrice);
                         data.put("status","pending");
                         data.put("itemNum",num);
                         data.put("uid",uid);
@@ -212,16 +212,16 @@ public class BookDetails extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void initData() {
-        cover = findViewById(R.id.shadowImageView);
+        cover = findViewById(R.id.cover);
         plus = findViewById(R.id.plus);
         minus = findViewById(R.id.minus);
-        buy = findViewById(R.id.button2);
+        buy = findViewById(R.id.deleteBtn);
         cart = findViewById(R.id.button3);
-        bName = findViewById(R.id.textView);
-        aName = findViewById(R.id.textView2);
-        price = findViewById(R.id.textView3);
+        bName = findViewById(R.id.bName);
+        aName = findViewById(R.id.aName);
+        price = findViewById(R.id.price);
         status = findViewById(R.id.textView7);
-        count = findViewById(R.id.count);
+        count = findViewById(R.id.quantity);
         details = findViewById(R.id.details);
 
         Intent intent = getIntent();
@@ -240,12 +240,12 @@ public class BookDetails extends AppCompatActivity {
         if (intent.getStringExtra("newPrice").equals("") ){
             price.setText("BDT " + intent.getStringExtra("price") + "৳/=");
             try {
-                amount = Integer.parseInt(intent.getStringExtra("price"));
+                totalPrice = Integer.parseInt(intent.getStringExtra("price"));
             }catch (Exception ignored){}
         }else {
             price.setText("BDT " + intent.getStringExtra("newPrice") + "৳/=");
             try {
-                amount = Integer.parseInt(intent.getStringExtra("newPrice"));
+                totalPrice = Integer.parseInt(intent.getStringExtra("newPrice"));
             }catch (Exception ignored){}
         }
 
