@@ -1,7 +1,8 @@
-package com.pattho.prokash.patthoprokash.Activity.BookStore;
+package com.pattho.prokash.patthoprokash.Activity.E_Library;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -11,15 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,15 +45,15 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.pattho.prokash.patthoprokash.Activity.ChatTalkTo;
 import com.pattho.prokash.patthoprokash.Activity.LandingActivity;
 import com.pattho.prokash.patthoprokash.Activity.SignIn;
 import com.pattho.prokash.patthoprokash.Activity.UserDetails;
 import com.pattho.prokash.patthoprokash.Adapter.CategoryListView_Adapter;
-import com.pattho.prokash.patthoprokash.Adapter.StoreBookListAdapter;
+import com.pattho.prokash.patthoprokash.Adapter.LibraryBookListAdapter;
 import com.pattho.prokash.patthoprokash.Adapter.StoreSliderAdapter;
 import com.pattho.prokash.patthoprokash.Model.AllBook_Model;
 import com.pattho.prokash.patthoprokash.R;
-import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
@@ -56,9 +62,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class HomeStore extends AppCompatActivity {
-
-
+public class LibraryHome extends AppCompatActivity {
+    String phone = "+8801688901225";
     MaterialToolbar materialToolbar;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
@@ -70,7 +75,7 @@ public class HomeStore extends AppCompatActivity {
     List<String> sliderList;
     DatabaseReference sliderRef;
 
-    StoreBookListAdapter storeBookListAdapter;
+    LibraryBookListAdapter libraryBookListAdapter;
     RecyclerView recyclerView;
     List<AllBook_Model> booksModelList;
     DatabaseReference allBookRef;
@@ -99,15 +104,10 @@ public class HomeStore extends AppCompatActivity {
     RecyclerView rv1, rv2, rv3, rv4, rv5, rv6, rv7, rv8;
 
     LinearLayout ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8;
-
-
-    private static final String[] paths = {"item 1", "item 2", "item 3"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_store);
-
+        setContentView(R.layout.activity_library_home);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         UsesPermission();
@@ -120,14 +120,58 @@ public class HomeStore extends AppCompatActivity {
         categoryListItem = new HashMap<>();
         initExpandableListData();
 
-        categoryListViewAdapter = new CategoryListView_Adapter(HomeStore.this, categoryGroupList, categoryListItem);
+        categoryListViewAdapter = new CategoryListView_Adapter(LibraryHome.this, categoryGroupList, categoryListItem);
         expandableListView.setAdapter(categoryListViewAdapter);
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                setListViewHeight(parent, groupPosition);
+
+                return false;
+            }
+        });
+
 
 
         UserAuth();
         onClickData();
         databaseFunction();
 
+    }
+
+    private void setListViewHeight(ExpandableListView listView, int group) {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.AT_MOST);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight()+2;
+
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void initExpandableListData() {
@@ -163,7 +207,7 @@ public class HomeStore extends AppCompatActivity {
                         sliderView.setVisibility(View.GONE);
                     } else sliderView.setVisibility(View.VISIBLE);
 
-                    sliderAdapter = new StoreSliderAdapter(HomeStore.this, sliderList);
+                    sliderAdapter = new StoreSliderAdapter(LibraryHome.this, sliderList);
                     sliderView.setSliderAdapter(sliderAdapter);
                 }
             }
@@ -194,7 +238,7 @@ public class HomeStore extends AppCompatActivity {
                 booksModelList.clear();
                 if (snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        if (dataSnapshot.child("inStore").getValue().equals("yes")) {
+                        if (dataSnapshot.child("inLibrary").getValue().equals("yes")) {
                             AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
 
                             booksModelList.add(allBook_model);
@@ -202,8 +246,8 @@ public class HomeStore extends AppCompatActivity {
                     }
                 }
 
-                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, booksModelList);
-                recyclerView.setAdapter(storeBookListAdapter);
+                libraryBookListAdapter = new LibraryBookListAdapter(LibraryHome.this, booksModelList);
+                recyclerView.setAdapter(libraryBookListAdapter);
             }
 
             @Override
@@ -214,65 +258,65 @@ public class HomeStore extends AppCompatActivity {
 
 //---------------------------------------------------------------------------------
 
-            secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec1");
-            LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
-            GridLayoutManager gridLayoutManager1 = new GridLayoutManager(this, 3);
+        secBook = FirebaseDatabase.getInstance().getReference().child("Library").child("sec1");
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
+        GridLayoutManager gridLayoutManager1 = new GridLayoutManager(this, 3);
 
-            int spanCount1 = 3; // 3 columns
-            int spacing1 = 30; // 30px
-            boolean includeEdge1 = true;
-            rv1.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
-            rv1.setLayoutManager(gridLayoutManager1);
+        int spanCount1 = 3; // 3 columns
+        int spacing1 = 30; // 30px
+        boolean includeEdge1 = true;
+        rv1.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
+        rv1.setLayoutManager(gridLayoutManager1);
 
-            List<String> bid = new ArrayList<>();
-            list1 = new ArrayList<>();
+        List<String> bid = new ArrayList<>();
+        list1 = new ArrayList<>();
 
-            secBook.child("bid").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    list1.clear();
-                    bid.clear();
-                    if (snapshot.exists()) {
-                        ln1.setVisibility(View.VISIBLE);
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            bid.add(dataSnapshot.getValue().toString());
-                        }
-                        allBookRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                list1.clear();
-                                if (snapshot.exists()) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        System.out.println(bid.contains(dataSnapshot.child("id").getValue().toString()));
-                                        if (bid.contains(dataSnapshot.child("id").getValue().toString())) {
-                                            AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
-                                            list1.add(allBook_model);
-                                        }
-                                    }
-
-                                    storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list1);
-                                    rv1.setAdapter(storeBookListAdapter);
-
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
-                    }else {
-                        ln1.setVisibility(View.GONE);
+        secBook.child("bid").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list1.clear();
+                bid.clear();
+                if (snapshot.exists()) {
+                    ln1.setVisibility(View.VISIBLE);
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        bid.add(dataSnapshot.getValue().toString());
                     }
+                    allBookRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            list1.clear();
+                            if (snapshot.exists()) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    System.out.println(bid.contains(dataSnapshot.child("id").getValue().toString()));
+                                    if (bid.contains(dataSnapshot.child("id").getValue().toString())) {
+                                        AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
+                                        list1.add(allBook_model);
+                                    }
+                                }
+
+                                libraryBookListAdapter = new LibraryBookListAdapter(LibraryHome.this, list1);
+                                rv1.setAdapter(libraryBookListAdapter);
+
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                }else {
+                    ln1.setVisibility(View.GONE);
                 }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
 //---------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------
 
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec2");
+        secBook = FirebaseDatabase.getInstance().getReference().child("Library").child("sec2");
         GridLayoutManager gridLayoutManager2 = new GridLayoutManager(this, 3);
 
 
@@ -305,8 +349,8 @@ public class HomeStore extends AppCompatActivity {
                                     }
                                 }
 
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list2);
-                                rv2.setAdapter(storeBookListAdapter);
+                                libraryBookListAdapter = new LibraryBookListAdapter(LibraryHome.this, list2);
+                                rv2.setAdapter(libraryBookListAdapter);
 
                             }
                         }
@@ -326,7 +370,7 @@ public class HomeStore extends AppCompatActivity {
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec3");
+        secBook = FirebaseDatabase.getInstance().getReference().child("Library").child("sec3");
         GridLayoutManager gridLayoutManager3 = new GridLayoutManager(this, 3);
 
 
@@ -359,8 +403,8 @@ public class HomeStore extends AppCompatActivity {
                                     }
                                 }
 
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list3);
-                                rv3.setAdapter(storeBookListAdapter);
+                                libraryBookListAdapter = new LibraryBookListAdapter(LibraryHome.this, list3);
+                                rv3.setAdapter(libraryBookListAdapter);
 
                             }
                         }
@@ -379,7 +423,7 @@ public class HomeStore extends AppCompatActivity {
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec4");
+        secBook = FirebaseDatabase.getInstance().getReference().child("Library").child("sec4");
         GridLayoutManager gridLayoutManager4 = new GridLayoutManager(this, 3);
 
 
@@ -412,8 +456,8 @@ public class HomeStore extends AppCompatActivity {
                                     }
                                 }
 
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list4);
-                                rv4.setAdapter(storeBookListAdapter);
+                                libraryBookListAdapter = new LibraryBookListAdapter(LibraryHome.this, list4);
+                                rv4.setAdapter(libraryBookListAdapter);
 
                             }
                         }
@@ -431,222 +475,6 @@ public class HomeStore extends AppCompatActivity {
         });
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
-
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec5");
-        GridLayoutManager gridLayoutManager5 = new GridLayoutManager(this, 3);
-
-
-        rv5.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
-        rv5.setLayoutManager(gridLayoutManager5);
-
-        List<String> bid5 = new ArrayList<>();
-        list5 = new ArrayList<>();
-
-        secBook.child("bid").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bid5.clear();
-                if (snapshot.exists()) {
-                    ln5.setVisibility(View.VISIBLE);
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        bid5.add(dataSnapshot.getValue().toString());
-                        System.out.println("-----------------------------"+bid5);
-                    }
-                    allBookRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            list5.clear();
-                            if (snapshot.exists()) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    System.out.println(bid5.contains(dataSnapshot.child("id").getValue().toString()));
-                                    if (bid5.contains(dataSnapshot.child("id").getValue().toString())) {
-                                        AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
-                                        list5.add(allBook_model);
-                                    }
-                                }
-
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list5);
-                                rv5.setAdapter(storeBookListAdapter);
-
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                }else {
-                    ln5.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec6");
-        GridLayoutManager gridLayoutManager6 = new GridLayoutManager(this, 3);
-
-
-        rv6.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
-        rv6.setLayoutManager(gridLayoutManager6);
-
-        List<String> bid6 = new ArrayList<>();
-        list6 = new ArrayList<>();
-
-        secBook.child("bid").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bid6.clear();
-                if (snapshot.exists()) {
-                    ln6.setVisibility(View.VISIBLE);
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        bid6.add(dataSnapshot.getValue().toString());
-                        System.out.println("-----------------------------"+bid6);
-                    }
-                    allBookRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            list6.clear();
-                            if (snapshot.exists()) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    System.out.println(bid6.contains(dataSnapshot.child("id").getValue().toString()));
-                                    if (bid6.contains(dataSnapshot.child("id").getValue().toString())) {
-                                        AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
-                                        list6.add(allBook_model);
-                                    }
-                                }
-
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list6);
-                                rv6.setAdapter(storeBookListAdapter);
-
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                }else {
-                    ln6.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec7");
-        GridLayoutManager gridLayoutManager7 = new GridLayoutManager(this, 3);
-
-
-        rv7.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
-        rv7.setLayoutManager(gridLayoutManager7);
-
-        List<String> bid7 = new ArrayList<>();
-        list7 = new ArrayList<>();
-
-        secBook.child("bid").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bid7.clear();
-                if (snapshot.exists()) {
-
-                    ln7.setVisibility(View.VISIBLE);
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        bid7.add(dataSnapshot.getValue().toString());
-                        System.out.println("-----------------------------"+bid7);
-                    }
-                    allBookRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            list7.clear();
-                            if (snapshot.exists()) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    System.out.println(bid7.contains(dataSnapshot.child("id").getValue().toString()));
-                                    if (bid7.contains(dataSnapshot.child("id").getValue().toString())) {
-                                        AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
-                                        list7.add(allBook_model);
-                                    }
-                                }
-
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list7);
-                                rv7.setAdapter(storeBookListAdapter);
-
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                }else {
-                    ln7.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-
-        secBook = FirebaseDatabase.getInstance().getReference().child("Store").child("sec8");
-        GridLayoutManager gridLayoutManager8 = new GridLayoutManager(this, 3);
-
-
-        rv8.addItemDecoration(new RecyclerView_Deco(spanCount1, spacing1, includeEdge1));
-        rv8.setLayoutManager(gridLayoutManager8);
-
-        List<String> bid8 = new ArrayList<>();
-        list8 = new ArrayList<>();
-
-        secBook.child("bid").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bid8.clear();
-                if (snapshot.exists()) {
-                    ln8.setVisibility(View.VISIBLE);
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        bid8.add(dataSnapshot.getValue().toString());
-                        System.out.println("-----------------------------"+bid8);
-                    }
-                    allBookRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            list8.clear();
-                            if (snapshot.exists()) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    System.out.println(bid8.contains(dataSnapshot.child("id").getValue().toString()));
-                                    if (bid8.contains(dataSnapshot.child("id").getValue().toString())) {
-                                        AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
-                                        list8.add(allBook_model);
-                                    }
-                                }
-
-                                storeBookListAdapter = new StoreBookListAdapter(HomeStore.this, list8);
-                                rv8.setAdapter(storeBookListAdapter);
-
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
-                }else {
-                    ln8.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-
-        //------------------------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------------------------
-
 
 
 
@@ -674,8 +502,8 @@ public class HomeStore extends AppCompatActivity {
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 1");
+                Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+                intent.putExtra("name","e-Library Section 1");
                 startActivity(intent);
             }
         });
@@ -688,8 +516,8 @@ public class HomeStore extends AppCompatActivity {
         view2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 2");
+                Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+                intent.putExtra("name","e-Library Section 2");
                 startActivity(intent);
             }
         });
@@ -702,8 +530,8 @@ public class HomeStore extends AppCompatActivity {
         view3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 3");
+                Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+                intent.putExtra("name","e-Library Section 3");
                 startActivity(intent);
             }
         });
@@ -716,67 +544,13 @@ public class HomeStore extends AppCompatActivity {
         view4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 4");
+                Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+                intent.putExtra("name","e-Library Section 4");
                 startActivity(intent);
             }
         });
 
 
-        //------------------------------------------------------------------------------------------------------------
-
-        //------------------------------------------------------------------------------------------------------------
-
-        view5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 5");
-                startActivity(intent);
-            }
-        });
-
-
-        //------------------------------------------------------------------------------------------------------------
-
-        //------------------------------------------------------------------------------------------------------------
-
-        view6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 6");
-                startActivity(intent);
-            }
-        });
-
-
-        //------------------------------------------------------------------------------------------------------------
-
-        //------------------------------------------------------------------------------------------------------------
-
-        view7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 7");
-                startActivity(intent);
-            }
-        });
-
-
-        //------------------------------------------------------------------------------------------------------------
-
-        //------------------------------------------------------------------------------------------------------------
-
-        view8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section 8");
-                startActivity(intent);
-            }
-        });
 
 
         //------------------------------------------------------------------------------------------------------------
@@ -786,13 +560,23 @@ public class HomeStore extends AppCompatActivity {
         viewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-                intent.putExtra("name","Store Section All");
+                Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+                intent.putExtra("name","e-Library Section All");
                 startActivity(intent);
             }
         });
 
 
+        //------------------------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------------------------
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                return false;
+            }
+        });
+
+        //------------------------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------------
 
     }
@@ -803,32 +587,34 @@ public class HomeStore extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.store_toolbar,menu);
 
-        View actionView = menu.findItem(R.id.cart_icon).getActionView();
+        View actionView = menu.findItem(R.id.store_cart_icon).getActionView();
         TextView tv = actionView.findViewById(R.id.itemCount);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cart").child(firebaseUser.getUid()).child("books");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int tBookCount = (int) snapshot.getChildrenCount();
-                if (tBookCount>0 && tBookCount<10) {
-                    tv.setText(tBookCount + "");
-                }else if (tBookCount >9){
-                    tv.setText("9+");
-                }else tv.setText("0");
-            }
+        if (firebaseUser!=null) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("LibraryCart").child(firebaseUser.getUid()).child("books");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int tBookCount = (int) snapshot.getChildrenCount();
+                    if (tBookCount > 0 && tBookCount < 10) {
+                        tv.setText(tBookCount + "");
+                    } else if (tBookCount > 9) {
+                        tv.setText("9+");
+                    } else tv.setText("0");
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
 
         actionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(HomeStore.this,ViewStoreCart.class);
+                Intent intent = new Intent(LibraryHome.this, LibraryCart.class);
                 startActivity(intent);
             }
         });
@@ -838,11 +624,11 @@ public class HomeStore extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.settings_icon) {
+        if (item.getItemId() == R.id.user_icon) {
             drawerLayout.openDrawer(GravityCompat.END);
             return true;
-        }  if (item.getItemId() == R.id.cart_icon) {
-            Intent intent = new Intent(HomeStore.this,ViewStoreCart.class);
+        }  if (item.getItemId() == R.id.store_cart_icon) {
+            Intent intent = new Intent(LibraryHome.this, LibraryCart.class);
             startActivity(intent);
             return true;
         }
@@ -859,38 +645,22 @@ public class HomeStore extends AppCompatActivity {
         title2 = findViewById(R.id.sec2);
         title3 = findViewById(R.id.sec3);
         title4 = findViewById(R.id.sec4);
-        title5 = findViewById(R.id.sec5);
-        title6 = findViewById(R.id.sec6);
-        title7 = findViewById(R.id.sec7);
-        title8 = findViewById(R.id.sec8);
 
         viewAll = findViewById(R.id.viewAll);
         view1 = findViewById(R.id.viewAll1);
         view2 = findViewById(R.id.viewAll2);
         view3 = findViewById(R.id.viewAll3);
         view4 = findViewById(R.id.viewAll4);
-        view5 = findViewById(R.id.viewAll5);
-        view6 = findViewById(R.id.viewAll6);
-        view7 = findViewById(R.id.viewAll7);
-        view8 = findViewById(R.id.viewAll8);
 
         rv1 = findViewById(R.id.sec1_rv);
         rv2 = findViewById(R.id.sec2_rv);
         rv3 = findViewById(R.id.sec3_rv);
         rv4 = findViewById(R.id.sec4_rv);
-        rv5 = findViewById(R.id.sec5_rv);
-        rv6 = findViewById(R.id.sec6_rv);
-        rv7 = findViewById(R.id.sec7_rv);
-        rv8 = findViewById(R.id.sec8_rv);
 
         ln1 = findViewById(R.id.ln1);
         ln2 = findViewById(R.id.ln2);
         ln3 = findViewById(R.id.ln3);
         ln4 = findViewById(R.id.ln4);
-        ln5 = findViewById(R.id.ln5);
-        ln6 = findViewById(R.id.ln6);
-        ln7 = findViewById(R.id.ln7);
-        ln8 = findViewById(R.id.ln8);
 
 
         //------------------------------------------------------------------------------------
@@ -902,12 +672,11 @@ public class HomeStore extends AppCompatActivity {
 
         sliderAdapter = new StoreSliderAdapter(this);
         sliderView.setSliderAdapter(sliderAdapter);
-        sliderView.setIndicatorAnimation(IndicatorAnimationType.SWAP); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-        sliderView.setSliderTransformAnimation(SliderAnimations.CUBEINROTATIONTRANSFORMATION);
+
+        sliderView.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION);
         sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
-        sliderView.setIndicatorSelectedColor(Color.WHITE);
-        sliderView.setIndicatorUnselectedColor(Color.GRAY);
-        sliderView.setScrollTimeInSec(3);
+
+        sliderView.setScrollTimeInSec(6);
         sliderView.setAutoCycle(true);
         sliderView.startAutoCycle();
 
@@ -922,7 +691,7 @@ public class HomeStore extends AppCompatActivity {
         materialToolbar = findViewById(R.id.materialToolbar);
         materialToolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         setSupportActionBar(materialToolbar);
-        getSupportActionBar().setTitle("পাঠ্য প্রকাশ");
+        getSupportActionBar().setTitle("পাঠ্য ই-লাইব্রের");
 
         drawerLayout = findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, materialToolbar, R.string.app_name, R.string.app_name);
@@ -953,30 +722,47 @@ public class HomeStore extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.drawer_menu_login:
+                    case R.id.store_menu_login_0:
 
-                        Toast.makeText(HomeStore.this, "hola", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(HomeStore.this, SignIn.class);
+                        Toast.makeText(LibraryHome.this, "hola", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LibraryHome.this, SignIn.class);
                         startActivity(intent);
                         return true;
 
-                    case R.id.drawer_menu_logout:
-                        Toast.makeText(HomeStore.this, "hola", Toast.LENGTH_SHORT).show();
-                        firebaseAuth.signOut();
-                        Intent intent2 = new Intent(HomeStore.this, SignIn.class);
-                        startActivity(intent2);
-                        finish();
+                    case R.id.store_menu_logout_1:
+                        new AlertDialog.Builder(LibraryHome.this,R.style.AlertDialogStyle)
+                                .setTitle("Log Out!")
+                                .setMessage(Html.fromHtml("</br><p style=\"color:#cfd8dc\">Are you sure you want to Log Out?</p>"))
+                                // Specifying a listener allows you to take an action before dismissing the dialog.
+                                // The dialog is automatically dismissed when a dialog button is clicked.
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        firebaseAuth.signOut();
+                                        Intent intent2 = new Intent(LibraryHome.this, SignIn.class);
+                                        startActivity(intent2);
+                                        finish();
+
+
+                                    }
+                                })
+                                // A null listener allows the button to dismiss the dialog and take no further action.
+                                .setNegativeButton("No", null)
+                                .show();
+
+
+
                         return true;
 
-                    case R.id.drawer_menu_author_d1:
-                    case R.id.drawer_menu_author_d2:
-//                        Intent intent3 = new Intent(HomeStore.this, Author.class);
+                    case R.id.store_menu_about_us_0:
+                    case R.id.store_menu_my_order_1:
+//                        Intent intent3 = new Intent(StoreHome.this, Author.class);
 //                        startActivity(intent3);
 //                        finish();
                         return true;
-                    case R.id.drawer_menu_user:
+                    case R.id.store_menu_my_account_1:
 
-                        Intent intent4 = new Intent(HomeStore.this, UserDetails.class);
+                        Intent intent4 = new Intent(LibraryHome.this, UserDetails.class);
                         startActivity(intent4);
                         return true;
 
@@ -984,6 +770,47 @@ public class HomeStore extends AppCompatActivity {
                 return true;
             }
         });
+
+    }
+    public  void toPhone(View view){
+        try {
+
+//            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+//            startActivity(intent);
+
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+            startActivity(intent);
+
+        }catch (Exception ignored){
+
+        }
+    }
+
+    public void toMessenger(View view) {
+
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("fb-messenger://user-thread/103807988159973"));
+//        i.setPackage("com.facebook.orca");
+
+
+
+        try {
+            startActivity(i);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Please Install Facebook Messenger",    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void toWhatapp(View view) {
+
+        try {
+            Intent in = new Intent(Intent.ACTION_VIEW);
+            in.setData(Uri.parse("https://api.whatsapp.com/send?phone=8801688901225&text=Hello%20*Pattho Prokash*, I want info."));
+            in.setPackage("com.whatsapp");
+            startActivity(in);
+        } catch (Exception e) {
+            Toast.makeText(this, "Whatsapp Not Installed", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -1022,9 +849,13 @@ public class HomeStore extends AppCompatActivity {
 
 
     public void allBook(View view) {
-        Intent intent = new Intent(getApplicationContext(),ViewAllBooks.class);
-        intent.putExtra("name","Store Section All");
+        Intent intent = new Intent(getApplicationContext(), LibraryViewAllBooks.class);
+        intent.putExtra("name","e-Library Section All");
         startActivity(intent);
+    }
+
+    public void chatWebView(View view) {
+        startActivity(new Intent(this, ChatTalkTo.class));
     }
 }
 
@@ -1078,4 +909,5 @@ class RecyclerView_Deco extends RecyclerView.ItemDecoration {
             }
         }
     }
+
 }

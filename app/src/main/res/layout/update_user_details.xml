@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#1d212b"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -62,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/choseProfileImgBtn">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/SignUp_nameEditTextField"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -87,7 +93,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout_0">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/SignUp_addressEditTextField"
+            android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -111,7 +117,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout_2">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/SignUp_emailEditTextField"
+            android:id="@+id/phone"
             android:layout_width="match_parent"
             android:maxLength="30"
             android:textColor="@color/white"
@@ -151,3 +157,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -5,8 +5,6 @@ public class StoreCart_Model {
     private String bid;
     private String price;
     private String quantity;
-
-
     private String author;
     private String bName;
     private String cover;
@@ -14,11 +12,13 @@ public class StoreCart_Model {
     public StoreCart_Model() {
     }
 
-    public StoreCart_Model(String bid, String price, String quantity) {
-        this.bid = bid;
-        this.price = price;
-        this.quantity = quantity;
-    }
+
+//    public StoreCart_Model(String bid, String price, String quantity) {
+//        this.bid = bid;
+//        this.price = price;
+//        this.quantity = quantity;
+//    }
+
 
     public StoreCart_Model(String bid, String price, String quantity, String author, String bName, String cover) {
         this.bid = bid;

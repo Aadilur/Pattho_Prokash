@@ -24,9 +24,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
-import com.pattho.prokash.patthoprokash.Activity.BookStore.BookDetails;
+import com.pattho.prokash.patthoprokash.Activity.BookStore.StoreBookDetails;
 import com.pattho.prokash.patthoprokash.Model.AllBook_Model;
 import com.pattho.prokash.patthoprokash.R;
 import com.squareup.picasso.Picasso;
@@ -65,7 +66,7 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
     @NonNull
     @Override
     public StoreBookList_VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.vh_allbooklist,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.vh_store_allbooklist,parent,false);
         return new StoreBookList_VH(view);
     }
 
@@ -106,7 +107,7 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
                 String genre = TextUtils.join(",", data.getGenre());
                 String keyword = TextUtils.join(",", data.getKeyword());
 
-                Intent intent = new Intent(context, BookDetails.class);
+                Intent intent = new Intent(context, StoreBookDetails.class);
                 intent.putExtra("id", data.getId());
                 intent.putExtra("cover",data.getCover_img());
                 intent.putExtra("bName", data.getBook_name());
@@ -172,6 +173,7 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
                                     data1.put("cover",data.getCover_img());
                                     data1.put("bName", data.getBook_name());
                                     data1.put("author", data.getAuthor());
+                                    data1.put("uid", user.getUid());
 
                                     databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -195,6 +197,7 @@ public class StoreBookListAdapter extends RecyclerView.Adapter<StoreBookList_VH>
                                 data1.put("cover",data.getCover_img());
                                 data1.put("bName", data.getBook_name());
                                 data1.put("author", data.getAuthor());
+                                data1.put("uid", user.getUid());
 
                                 databaseReference.setValue(data1).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -254,7 +257,7 @@ class StoreBookList_VH extends RecyclerView.ViewHolder {
         book = itemView.findViewById(R.id.vh_bookName);
         author = itemView.findViewById(R.id.vh_authorName);
         price = itemView.findViewById(R.id.vh_price);
-        discount = itemView.findViewById(R.id.vh_page);
+        discount = itemView.findViewById(R.id.vh_discount);
         cartBtn = itemView.findViewById(R.id.addCart);
 
 

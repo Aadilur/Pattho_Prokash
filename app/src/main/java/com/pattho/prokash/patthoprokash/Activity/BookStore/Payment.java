@@ -95,23 +95,25 @@ public class Payment extends AppCompatActivity {
                         final String uid = user.getUid();
 
                         Map<String, Object> data2 = new HashMap<>();
-                        data2.put("bid", bid);
-                        data2.put("Txid", txid);
-                        data2.put("paymentMethod", paymentMethod);
-                        data2.put("paymentAccount", paymentAccount);
-                        data2.put("shipping", shippingAdd);
-                        data2.put("contact", phoneNum);
-                        data2.put("status", "pending");
-                        data2.put("quantity", num);
-                        data2.put("price", price);
-                        data2.put("bName", book);
+                        data2.put("bid", bid+"");
+                        data2.put("quantity", num+"");
+                        data2.put("price", price+"");
+                        data2.put("bName", book+"");
                         data2.put("aName", author);
-                        data2.put("cover", cvr);
+                        data2.put("cover", cvr+"");
+                        data2.put("Txid", txid+"");
+                        data2.put("uid", uid+"");
 
                         Map<String, Object> data = new HashMap<>();
                         data.put("time", ServerValue.TIMESTAMP);
-                        data.put("totalPrice", price);
-                        data.put("uid", uid);
+                        data.put("totalPrice", price+"");
+                        data.put("uid", uid+"");
+                        data.put("Txid", txid+"");
+                        data.put("status", "pending");
+                        data.put("paymentMethod", paymentMethod+"");
+                        data.put("paymentAccount", paymentAccount+"");
+                        data.put("shipping", shippingAdd+"");
+                        data.put("contact", phoneNum+"");
 
 
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -125,14 +127,16 @@ public class Payment extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 databaseReference.child(paymentMethod + ":" + txid).child("books").child(bid).setValue(data2);
                                                 Toast.makeText(Payment.this, "Order Placed Successfully...", Toast.LENGTH_SHORT).show();
+                                                payBtn.setEnabled(false);
                                             } else {
                                                 Toast.makeText(Payment.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
 
-                                } else
+                                } else {
                                     Toast.makeText(Payment.this, "Your Transaction ID Already Exist...", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                             @Override
@@ -160,47 +164,67 @@ public class Payment extends AppCompatActivity {
                         final String uid = user.getUid();
 
                         Map<String, Object> data2 = new HashMap<>();
-                        data2.put("Txid", txid);
-                        data2.put("paymentMethod", paymentMethod);
-                        data2.put("paymentAccount", paymentAccount);
-                        data2.put("shipping", shippingAdd);
-                        data2.put("contact", phoneNum);
-                        data2.put("status", "pending");
+                        data2.put("Txid", txid+"");
 
                         Map<String, Object> data = new HashMap<>();
                         data.put("time", ServerValue.TIMESTAMP);
-                        data.put("uid", uid);
+                        data.put("Txid", txid+"");
+                        data.put("uid", uid+"");
+                        data.put("paymentMethod", paymentMethod+"");
+                        data.put("paymentAccount", paymentAccount+"");
+                        data.put("shipping", shippingAdd+"");
+                        data.put("contact", phoneNum+"");
+                        data.put("status", "pending");
 
 
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid());
+                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("pendingOrder").child(paymentMethod + ":" + txid);
 
-                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("pendingOrder").child(paymentMethod + ":" + txid);;
-
-
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        reference2.setValue(snapshot.getValue(), new DatabaseReference.CompletionListener() {
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                if (error != null) {
-                                    System.out.println("Copy failed");
-                                } else {
-                                    System.out.println("Success");
-//                                    reference.removeValue();
-                                    reference2.updateChildren(data);
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.child(paymentMethod + ":" + txid).exists()) {
 
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            reference2.setValue(snapshot.getValue(), new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                    if (error != null) {
+                                                        Toast.makeText(Payment.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(Payment.this, "Order Placed Successfully...", Toast.LENGTH_SHORT).show();
+                                                        reference2.updateChildren(data);
+                                                        reference.removeValue();
+                                                        payBtn.setEnabled(false);
+
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+
+
+                                } else {
+                                    Toast.makeText(Payment.this, "Your Transaction ID Already Exist...", Toast.LENGTH_SHORT).show();
                                 }
                             }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
                         });
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
 
                 reference2.child("books").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -270,12 +294,13 @@ public class Payment extends AppCompatActivity {
 
         payBtn = findViewById(R.id.payBtn);
 
+        payBtn.setEnabled(true);
 
         Intent intent = getIntent();
 
         fromCart = intent.getBooleanExtra("fromCart",false);
 
-        Amount.setText("Pay Taka : BDT "+intent.getIntExtra("amount",0)+"৳ /=");
+        Amount.setText("Pay Taka : BDT "+intent.getIntExtra("amount",0)+".00 ৳ /=");
         price = intent.getIntExtra("amount",0);
         num = intent.getIntExtra("num",0);
         bid = intent.getStringExtra("bid");

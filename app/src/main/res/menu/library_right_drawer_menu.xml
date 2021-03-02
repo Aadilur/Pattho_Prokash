@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/drawer_menu_anonimas"
+        android:visible="true">
+        <item android:id="@+id/store_menu_about_us_0"
+            android:title="About Us"/>
+
+        <item android:id="@+id/store_menu_login_0"
+            android:title="Login"/>
+
+
+    </group>
+
+    <group android:id="@+id/drawer_menu_loggedIn"
+        android:visible="false">
+
+        <item android:id="@+id/store_menu_my_account_1"
+            android:title="My Account"/>
+
+        <item android:id="@+id/store_menu_my_order_1"
+            android:title="My Order"/>
+
+        <item android:id="@+id/store_menu_pending_return_1"
+            android:title="Pending Return"/>
+
+
+        <item android:id="@+id/store_menu_logout_1"
+            android:title="Logout"/>
+
+    </group>
+</menu>

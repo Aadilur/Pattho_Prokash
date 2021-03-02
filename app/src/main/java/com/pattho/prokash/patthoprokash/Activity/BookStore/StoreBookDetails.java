@@ -33,7 +33,7 @@ import com.yinglan.shadowimageview.ShadowImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BookDetails extends AppCompatActivity {
+public class StoreBookDetails extends AppCompatActivity {
     String phone = "+8801688901225";
 
     ShadowImageView cover;
@@ -49,7 +49,7 @@ public class BookDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_details);
+        setContentView(R.layout.activity_store_book_details);
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -144,7 +144,7 @@ public class BookDetails extends AppCompatActivity {
             public void onClick(View v) {
 
                     if (firebaseUser != null){
-                        Intent intent = new Intent(BookDetails.this,Payment.class);
+                        Intent intent = new Intent(StoreBookDetails.this,Payment.class);
                         intent.putExtra("amount", totalPrice);
                         intent.putExtra("bid",bid);
                         intent.putExtra("num",num);
@@ -155,7 +155,7 @@ public class BookDetails extends AppCompatActivity {
 
                         startActivity(intent);
                     }else {
-                        Toast.makeText(BookDetails.this, "Please SignIn and Verify Your Email...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StoreBookDetails.this, "Please SignIn and Verify Your Email...", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -192,16 +192,16 @@ public class BookDetails extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Toast.makeText(BookDetails.this, "Order Placed Successfully.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(StoreBookDetails.this, "Order Placed Successfully.", Toast.LENGTH_SHORT).show();
                                 }else {
-                                    Toast.makeText(BookDetails.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(StoreBookDetails.this, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
 
 
                     }else {
-                        Toast.makeText(BookDetails.this, "Please SignIn and Verify Your Email.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StoreBookDetails.this, "Please SignIn and Verify Your Email.", Toast.LENGTH_SHORT).show();
                     }
                 }catch (Exception ignored){}
             }

@@ -8,6 +8,9 @@
     android:background="#1d212b"
     tools:context=".Activity.LandingActivity">
 
+    <include
+        android:id="@+id/materialToolbar"
+        layout="@layout/zz_store_main_toolbar" />
 
     <Button
         android:id="@+id/outlinedButton"
@@ -17,7 +20,8 @@
         android:layout_marginStart="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_100sdp"
         android:layout_marginEnd="@dimen/_30sdp"
-        android:text="ই লাইব্রেরী"
+        android:text="পাঠ্য ই-লাইব্রেরী"
+        android:onClick="OnlineBookLibrary"
         android:padding="@dimen/_20sdp"
         android:textSize="@dimen/_20sdp"
         app:strokeColor="@color/white"
@@ -36,7 +40,7 @@
         android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_30sdp"
         android:padding="@dimen/_20sdp"
-        android:text="অনলাইন  বুক স্টোর"
+        android:text="পাঠ্য ই-স্টোর"
         android:onClick="OnlineBookStore"
         app:strokeColor="@color/white"
         android:textColor="@color/white"

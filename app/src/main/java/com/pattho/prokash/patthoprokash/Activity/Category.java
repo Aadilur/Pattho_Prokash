@@ -1,4 +1,4 @@
-package com.pattho.prokash.patthoprokash.Activity.E_Library;
+package com.pattho.prokash.patthoprokash.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.pattho.prokash.patthoprokash.R;
 
-public class HomeLibrary extends AppCompatActivity {
+public class Category extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_library);
+        setContentView(R.layout.activity_category);
     }
 }

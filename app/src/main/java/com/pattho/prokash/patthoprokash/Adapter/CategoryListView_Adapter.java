@@ -1,6 +1,7 @@
 package com.pattho.prokash.patthoprokash.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pattho.prokash.patthoprokash.Activity.BookStore.StoreViewAllBooks;
 import com.pattho.prokash.patthoprokash.R;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class CategoryListView_Adapter extends BaseExpandableListAdapter {
 
@@ -96,6 +97,15 @@ public class CategoryListView_Adapter extends BaseExpandableListAdapter {
         }
         TextView textView = convertView.findViewById(R.id.textView1);
         textView.setText(list);
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, StoreViewAllBooks.class);
+                intent.putExtra("name",list);
+                Toast.makeText(context, ""+list, Toast.LENGTH_SHORT).show();
+                context.startActivity(intent);
+            }
+        });
         return convertView;
 
     }

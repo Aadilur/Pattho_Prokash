@@ -26,7 +26,7 @@
             <ImageView
                 android:id="@+id/cover"
                 android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_140sdp"
+                android:layout_height="@dimen/_150sdp"
                 android:scaleType="fitXY"
                 android:src="@drawable/place_holder"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
                 android:id="@+id/deleteBtn"
                 android:layout_width="@dimen/_140sdp"
                 android:layout_height="@dimen/_30sdp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:text="Delete"
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="@+id/plus"
@@ -125,7 +125,8 @@
 
             <TextView
                 android:id="@+id/aName"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_150sdp"
+                android:maxLines="2"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
@@ -140,14 +141,16 @@
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_3sdp"
                 android:text="Price: "
-                android:textStyle="bold"
                 android:textSize="@dimen/_10sdp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/minus"
                 app:layout_constraintEnd_toEndOf="@+id/minus"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/minus" />
+                app:layout_constraintStart_toStartOf="@+id/minus"
+                app:layout_constraintTop_toBottomOf="@+id/aName" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

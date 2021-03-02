@@ -96,6 +96,7 @@ public class VerifyPhone extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(VerifyPhone.this,UpdateUserDetails.class);
+                    intent.putExtra("1","1");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }else Toast.makeText(VerifyPhone.this, "Error: "+ Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
@@ -118,6 +119,7 @@ public class VerifyPhone extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(VerifyPhone.this,UpdateUserDetails.class);
+                    intent.putExtra("1","1");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }else Toast.makeText(VerifyPhone.this, "Error: "+ Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();

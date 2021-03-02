@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
 
-        android:id="@+id/cart_icon"
+        android:id="@+id/store_cart_icon"
         android:icon="@drawable/ic_cart"
         android:title="Cart"
         app:actionLayout="@layout/zz_cart_base_icon"
         app:showAsAction="always" />
     <item
         app:showAsAction="always"
-        android:id="@+id/settings_icon"
-        android:icon="@drawable/setting_icon"
+        android:id="@+id/user_icon"
+        android:icon="@drawable/user_icon"
         android:title="Account" />
 </menu>

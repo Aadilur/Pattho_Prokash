@@ -51,7 +51,7 @@ public class UpdateUserDetails extends AppCompatActivity {
     Button imgChose;
     CircleImageView img1;
     Context context = this;
-
+    String s="s";
 
     StorageReference storageReference;
 
@@ -63,6 +63,8 @@ public class UpdateUserDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_user_details);
         auth = FirebaseAuth.getInstance();
+        Intent intent = getIntent();
+        s = intent.getStringExtra("1");
         initData();
         OnClickData();
     }
@@ -124,6 +126,13 @@ public class UpdateUserDetails extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     Toast.makeText(context, "Update Success...!", Toast.LENGTH_SHORT).show();
+                    if (s!=null) {
+                        if (s.equals("1")) {
+                            Intent intent = new Intent(UpdateUserDetails.this, LandingActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                    }
                 } else {
                     Toast.makeText(UpdateUserDetails.this, "You can't sign up with this Email or Password.......", Toast.LENGTH_SHORT).show();
                 }
@@ -161,6 +170,7 @@ public class UpdateUserDetails extends AppCompatActivity {
                         databaseReference.child("pic").setValue(img_link).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(UpdateUserDetails.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+
                             }
                         });
                     }));
@@ -194,9 +204,9 @@ public class UpdateUserDetails extends AppCompatActivity {
     }
 
     private void initData() {
-        Fname = findViewById(R.id.SignUp_nameEditTextField);
-        Address = findViewById(R.id.SignUp_addressEditTextField);
-        Email = findViewById(R.id.SignUp_emailEditTextField);
+        Fname = findViewById(R.id.name);
+        Address = findViewById(R.id.address);
+        Email = findViewById(R.id.phone);
         imgChose = findViewById(R.id.choseProfileImgBtn);
         img1 = findViewById(R.id.profile_image);
 
@@ -229,8 +239,12 @@ public class UpdateUserDetails extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        Intent intent = new Intent(this,LandingActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(intent);
+        if (s != null) {
+            if (s.equals("1")) {
+                Intent intent = new Intent(this, LandingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
     }
 }

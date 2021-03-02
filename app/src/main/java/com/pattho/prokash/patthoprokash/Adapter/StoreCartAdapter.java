@@ -8,20 +8,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.pattho.prokash.patthoprokash.Model.AllBook_Model;
 import com.pattho.prokash.patthoprokash.Model.StoreCart_Model;
 import com.pattho.prokash.patthoprokash.R;
 import com.squareup.picasso.Picasso;
@@ -43,6 +43,9 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
         this.totalBookPrice = totalBookPrice;
     }
 
+
+
+
     public StoreCartAdapter(Context context, List<StoreCart_Model> storeCart_models) {
         this.context = context;
         this.storeCart_models = storeCart_models;
@@ -51,7 +54,7 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
     @NonNull
     @Override
     public StoreCart_VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.vh_cart_view, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.vh_store_cart_view, parent, false);
         return new StoreCart_VH(view);
     }
 
@@ -76,9 +79,34 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
             @Override
             public void onClick(View v) {
                 assert user != null;
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getBid());
-                reference.removeValue();
-                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference().child("Cart22222");
+
+                System.out.println("---------------------"+storeCart_models.size());
+
+                if (storeCart_models.size() ==1){
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart");
+                    reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                                notifyDataSetChanged();
+                                notifyItemRemoved(position);
+                            }
+                        }
+                    });
+
+                }else {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(user.getUid()).child("books").child(data.getBid());
+                    reference.removeValue();
+                    reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
 
 //                reference.addListenerForSingleValueEvent(new ValueEventListener() {
 //                    @Override
@@ -89,6 +117,7 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
 //                                if (error != null) {
 //                                    System.out.println("Copy failed");
 //                                } else {
+
 //                                    System.out.println("Success");
 //
 //                                }
@@ -139,8 +168,23 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(uid).child("books").child(data.getBid());
 
             price*=quantity;
-            reference.child("quantity").setValue(String.valueOf(quantity));
-            reference.child("price").setValue(String.valueOf(price));
+            int finalQuantity = quantity;
+            int finalPrice = price;
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists() &&snapshot.hasChild("bid")){
+
+                        reference.child("quantity").setValue(String.valueOf(finalQuantity));
+                        reference.child("price").setValue(String.valueOf(finalPrice));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 
@@ -154,11 +198,26 @@ public class StoreCartAdapter extends RecyclerView.Adapter<StoreCart_VH> {
             quantity+=1;
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Cart").child(uid).child("books").child(data.getBid());
 
-
-            reference.child("quantity").setValue(String.valueOf(quantity));
-
             price*=quantity;
-            reference.child("price").setValue(String.valueOf(price));
+
+            int finalQuantity = quantity;
+            int finalPrice = price;
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists() &&snapshot.hasChild("bid")){
+
+                        reference.child("quantity").setValue(String.valueOf(finalQuantity));
+                        reference.child("price").setValue(String.valueOf(finalPrice));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
     }
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_height="match_parent"
-android:layout_width="match_parent"
-    android:background="#1d212b"
-xmlns:android="http://schemas.android.com/apk/res/android" >
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    tools:context=".Activity.BookStore.BookDetails"
+    android:layout_width="match_parent"
+    android:background="#1d212b"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    tools:context=".Activity.E_Library.LibraryBookDetails"
     android:paddingBottom="@dimen/_12sdp">
 
     <com.google.android.material.card.MaterialCardView
@@ -42,7 +42,7 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 android:id="@+id/deleteBtn"
                 android:layout_width="@dimen/_140sdp"
                 android:layout_height="@dimen/_30sdp"
-                android:text="Buy Now"
+                android:text="Order Now"
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="@+id/plus"
                 app:layout_constraintStart_toStartOf="@+id/minus"
@@ -96,6 +96,7 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 android:id="@+id/minus"
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:backgroundTint="#E91E63"
                 android:text="-"
                 android:textColor="@color/white"
@@ -103,18 +104,18 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.538"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.654" />
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/bName"
                 android:layout_width="@dimen/_150sdp"
-                android:maxLines="2"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="Book Name"
                 android:textSize="@dimen/_10sdp"
-                android:ellipsize="end"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/minus"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -123,10 +124,11 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
 
             <TextView
                 android:id="@+id/aName"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:ellipsize="end"
+                android:maxLines="2"
                 android:text="Author Name"
                 android:textSize="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="@+id/bName"
@@ -134,29 +136,20 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 app:layout_constraintStart_toStartOf="@+id/bName"
                 app:layout_constraintTop_toBottomOf="@+id/bName" />
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="Price: "
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/minus"
-                app:layout_constraintEnd_toEndOf="@+id/minus"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/minus" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:text="Status: "
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/price"
                 app:layout_constraintEnd_toEndOf="@+id/minus"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/minus" />
+                app:layout_constraintStart_toStartOf="@+id/minus"
+                app:layout_constraintTop_toBottomOf="@+id/aName" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -268,4 +261,4 @@ since the 1500s, when an unknown printer took a galley of type and
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    </ScrollView>

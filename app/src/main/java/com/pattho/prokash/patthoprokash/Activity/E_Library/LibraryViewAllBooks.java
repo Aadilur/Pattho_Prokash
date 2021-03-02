@@ -1,4 +1,4 @@
-package com.pattho.prokash.patthoprokash.Activity.BookStore;
+package com.pattho.prokash.patthoprokash.Activity.E_Library;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
@@ -18,31 +17,32 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.pattho.prokash.patthoprokash.Adapter.StoreViewAll_Adapter;
+import com.pattho.prokash.patthoprokash.Adapter.LibraryViewAll_Adapter;
 import com.pattho.prokash.patthoprokash.Model.AllBook_Model;
 import com.pattho.prokash.patthoprokash.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewAllBooks extends AppCompatActivity {
+public class LibraryViewAllBooks extends AppCompatActivity {
 
 
     SearchView searchView;
     RecyclerView recyclerView;
 
-    String dir, dir2, dir3;
+    String dir, dir2, dir3,dir4;
     DatabaseReference allBookRef;
     DatabaseReference secBook;
 
-    StoreViewAll_Adapter adapter;
+    LibraryViewAll_Adapter adapter;
 
     List<AllBook_Model> booksModelList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_all_books);
+        setContentView(R.layout.activity_library_view_all_books);
+
         initData();
 
         databaseFunction();
@@ -58,29 +58,29 @@ public class ViewAllBooks extends AppCompatActivity {
 
 
 
-            allBookRef = FirebaseDatabase.getInstance().getReference().child("Books");
+        allBookRef = FirebaseDatabase.getInstance().getReference().child("Books");
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(ViewAllBooks.this);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(ViewAllBooks.this, 3);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(LibraryViewAllBooks.this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(LibraryViewAllBooks.this, 3);
 
-            recyclerView.addItemDecoration(new RecyclerView_Deco2(3, -30, true));
-            int spanCount = 3; // 3 columns
-            int spacing = 30; // 50px
-            boolean includeEdge = true;
-            recyclerView.addItemDecoration(new RecyclerView_Deco(spanCount, spacing, includeEdge));
+        recyclerView.addItemDecoration(new LibraryViewAllBooks_RecyclerViewDeco(3, -30, true));
+        int spanCount = 3; // 3 columns
+        int spacing = 30; // 50px
+        boolean includeEdge = true;
+        recyclerView.addItemDecoration(new LibraryViewAllBooks_RecyclerViewDeco(spanCount, spacing, includeEdge));
 
-            recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
-            List<String> bid = new ArrayList<>();
-            booksModelList = new ArrayList<>();
+        List<String> bid = new ArrayList<>();
+        booksModelList = new ArrayList<>();
 
-            if (dir !=null || dir2 !=null) {
+        if (dir !=null || dir2 !=null) {
 
-                if (dir != null) {
-                    secBook = FirebaseDatabase.getInstance().getReference().child("Store").child(dir).child("bid");
-                } else if (dir2 != null) {
-                    secBook = FirebaseDatabase.getInstance().getReference().child("Library").child(dir2).child("bid");
-                }
+            if (dir != null) {
+                secBook = FirebaseDatabase.getInstance().getReference().child("Store").child(dir).child("bid");
+            } else if (dir2 != null) {
+                secBook = FirebaseDatabase.getInstance().getReference().child("Library").child(dir2).child("bid");
+            }
             secBook.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -104,7 +104,7 @@ public class ViewAllBooks extends AppCompatActivity {
 
                                     }
 
-                                    adapter = new StoreViewAll_Adapter(ViewAllBooks.this, booksModelList);
+                                    adapter = new LibraryViewAll_Adapter(LibraryViewAllBooks.this, booksModelList);
                                     recyclerView.setAdapter(adapter);
 
                                     searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
@@ -160,7 +160,52 @@ public class ViewAllBooks extends AppCompatActivity {
                         }
                     }
 
-                    adapter = new StoreViewAll_Adapter(ViewAllBooks.this, booksModelList);
+                    adapter = new LibraryViewAll_Adapter(LibraryViewAllBooks.this, booksModelList);
+                    recyclerView.setAdapter(adapter);
+                    searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+
+                            adapter.getFilter().filter(newText.toString());
+
+                            return false;
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }if (dir4 !=null){
+
+            System.out.println(dir4+ "-------------------------------------");
+            allBookRef = FirebaseDatabase.getInstance().getReference().child("Books");
+
+
+            allBookRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    booksModelList.clear();
+                    if (snapshot.exists()) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            if (dataSnapshot.child("category").getValue().toString().contains(dir4)) {
+                                AllBook_Model allBook_model = dataSnapshot.getValue(AllBook_Model.class);
+
+                                booksModelList.add(allBook_model);
+                            }
+                        }
+                    }
+
+                    adapter = new LibraryViewAll_Adapter(LibraryViewAllBooks.this, booksModelList);
                     recyclerView.setAdapter(adapter);
                     searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
                         @Override
@@ -243,9 +288,12 @@ public class ViewAllBooks extends AppCompatActivity {
             case "Store Section All":
                 dir3 = "inStore";
                 break;
-            case "Library Section All":
+            case "e-Library Section All":
                 dir3 = "inLibrary";
                 break;
+            default:
+                dir4 = temp;
+                System.out.println(dir4);
         }
 
     }
@@ -263,12 +311,12 @@ public class ViewAllBooks extends AppCompatActivity {
 
 
 
-class RecyclerView_Deco2 extends RecyclerView.ItemDecoration {
+class LibraryViewAllBooks_RecyclerViewDeco extends RecyclerView.ItemDecoration {
     private int spanCount;
     private int spacing;
     private boolean includeEdge;
 
-    public RecyclerView_Deco2(int spanCount, int spacing, boolean includeEdge) {
+    public LibraryViewAllBooks_RecyclerViewDeco(int spanCount, int spacing, boolean includeEdge) {
         this.spanCount = spanCount;
         this.spacing = spacing;
         this.includeEdge = includeEdge;

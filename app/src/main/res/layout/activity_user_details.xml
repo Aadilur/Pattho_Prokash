@@ -4,24 +4,135 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#1D212B"
     tools:context=".Activity.UserDetails">
 
-    <Button
-        android:id="@+id/button4"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        android:onClick="editPro"
+        android:layout_marginTop="8dp"
+        android:text="User Profile"
+        android:textSize="@dimen/_20sdp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="@dimen/_20sdp"
+        android:id="@+id/profile_image"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_90sdp"
+        android:src="@drawable/place_holder"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/materialTextView"
+        app:layout_constraintStart_toStartOf="@+id/materialTextView"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView"
+        tools:ignore="MissingConstraints" />
+
+
+
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:maxLength="30"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_13sdp"
+        android:text="Name: "
+        android:textIsSelectable="true"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="50"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_13sdp"
+        android:text="Address: "
+        android:textIsSelectable="true"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="30"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_13sdp"
+        android:text="Phone: "
+        android:textIsSelectable="true"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/address"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="30"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_13sdp"
+        android:text="Email: "
+        android:textIsSelectable="true"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/phone"
+        tools:layout_editor_absoluteX="0dp" />
+    <TextView
+        android:id="@+id/uid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_13sdp"
+        android:text="User ID: "
+        android:maxLines="2"
+        android:textIsSelectable="true"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:id="@+id/SignUp_signUpBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:text="Edit Info"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_15sdp"
+        android:onClick="editPro"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toBottomOf="@+id/uid" />
+
+    <View
+        android:id="@+id/divider9"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#203B5C"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,7 @@
 
             <com.google.android.material.card.MaterialCardView
             android:id="@+id/vh_coverImg"
-            android:layout_width="wrap_content"
+                android:layout_width="@dimen/_100sdp"
             android:layout_height="wrap_content"
             android:backgroundTint="#1d212b"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/materialCardView2"
                         android:layout_width="@dimen/_80sdp"
-                        android:layout_height="@dimen/_112sdp"
+                        android:layout_height="@dimen/_120sdp"
                         android:elevation="@dimen/_12sdp"
                         app:cardCornerRadius="@dimen/_8sdp"
                         app:cardElevation="@dimen/_4sdp"
@@ -47,9 +47,10 @@
                         android:id="@+id/vh_bookName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="2"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:ellipsize="end"
-                        android:text="The Hacker Book"
+                        android:maxLines="2"
+                        android:text="Books Name Goes Here "
                         android:textSize="@dimen/_10sdp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +61,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:text="Ashek Mahmud Khan"
+                        android:maxLines="2"
+                        android:text="Author Name Goes Here"
                         android:textSize="@dimen/_8sdp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/vh_bookName" />
@@ -74,7 +76,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/vh_authorName" />
 
                     <TextView
-                        android:id="@+id/vh_page"
+                        android:id="@+id/vh_discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -95,7 +97,7 @@
                         app:icon="@drawable/ic_cart"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/vh_page" />
+                        app:layout_constraintTop_toBottomOf="@+id/vh_discount" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
